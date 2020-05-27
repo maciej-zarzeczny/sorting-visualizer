@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./array.scss";
 
-const Array = ({ array }) => {
+const Array = ({ array, animations }) => {
   const [barWidth, setBarWidth] = useState(0);
   useEffect(() => {
     const calculateBarWidth = () => {
@@ -17,9 +17,11 @@ const Array = ({ array }) => {
   return (
     <div className="array-container">
       {array.map((val, idx) => {
+        let activeClass = animations.includes(idx) || animations.includes(-1) ? "active" : "";
+
         return (
           <div
-            className="bar"
+            className={"bar " + activeClass}
             key={idx}
             style={{ height: val + "px", width: barWidth + "px" }}
           ></div>

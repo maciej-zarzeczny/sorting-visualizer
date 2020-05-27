@@ -14,5 +14,9 @@
     margin: 0 1px 0 1px;
     border-radius: 1000px 1000px 0 0;
     background-color: color("secondary");
+
+    &.active {
+      background-color: color("accent");
+    }
   }
 }
