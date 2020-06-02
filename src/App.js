@@ -1,73 +1,123 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Navbar from "./components/Navbar/Navbar";
 import Array from "./components/Array/Array";
 import { mergeSort, bubbleSort } from "./Algorythms";
 
-function App() {
-  const [array, setArray] = useState([]);
-  const [arraySize, setArraySize] = useState(100);
-  const [resetArray, setResetArray] = useState(false);
-  const [algorythm, setAlgorythm] = useState("0");
-  const [animationSpeed, setAnimationSpeed] = useState(80);
-  const [animations, setAnimations] = useState([]);
+class App extends React.Component {
+  state = {
+    array: [],
+    arraySize: 100,
+    algorythm: "0",
+    animationSpeed: 15,
+    visualizationRunning: false,
+    trace: { arrays: [], comparisons: [], swaps: [], sorted: [] },
+    step: 0,
+    animationId: null,
 
-  useEffect(() => {
+    currentComparison: [],
+    currentSwap: [],
+  };
+
+  componentDidMount() {
+    this.generateNewArray();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.arraySize !== this.state.arraySize) {
+      this.generateNewArray();
+    }
+  }
+
+  generateNewArray() {
+    let { arraySize } = this.state;
     const getRandomInt = (min, max) => {
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    let newArray = [];
+    let array = [];
     for (let i = 0; i < arraySize; i++) {
-      newArray.push(getRandomInt(5, 750));
+      array.push(getRandomInt(5, 750));
     }
 
-    setArray(() => newArray);
-  }, [resetArray, arraySize]);
+    this.setState({
+      array,
+      trace: {
+        arrays: [],
+        comparisons: [],
+        swaps: [],
+        sorted: [],
+      },
+      step: 0,
+    });
+  }
 
-  const handleArrayReset = () => {
-    setResetArray(!resetArray);
-    setAnimations([]);
+  //Start generating new array and reset animations
+  handleArrayReset = () => {
+    this.generateNewArray();
   };
 
-  const handleSizeChange = (val) => {
-    setArraySize(val);
+  //Generate new array of different size
+  handleSizeChange = (arraySize) => {
+    this.setState({ arraySize });
   };
 
-  const handleAnimationSpeedChange = (val) => {
-    setAnimationSpeed(val);
+  //Change animations speed
+  handleAnimationSpeedChange = (animationSpeed) => {
+    this.setState({ animationSpeed });
   };
 
-  const handleAlgorythmChange = (val) => {
-    setAlgorythm(val);
-    setAnimations([]);
+  //Change current algorythm
+  handleAlgorythmChange = (algorythm) => {
+    if (this.state.trace.arrays.length !== 0) {
+      this.generateNewArray();
+    }
+    this.setState({ algorythm });
   };
 
-  const handleArrayChange = (newArray) => {
-    setArray(newArray);
+  //Update array
+  handleArrayChange = (array) => {
+    this.setState({ array });
   };
 
-  const handleAnimationsChange = (newAnimations) => {
-    console.log(newAnimations);
-    setAnimations(newAnimations);
+  handleTraceChange = (arrays, comparisons) => {
+    let trace = { arrays, comparisons };
+    this.setState({ trace });
   };
 
-  const handleStart = async () => {
+  handleStart = () => {
+    let { algorythm, array, trace } = this.state;
+
     switch (algorythm) {
       case "0":
-        setArray(mergeSort(array));
+        if (trace.arrays.length === 0) {
+          let newTrace = mergeSort(array);
+          this.setState({ trace: newTrace }, () => {
+            this.startVisualization();
+          });
+        } else {
+          this.startVisualization();
+        }
         break;
 
       case "1":
-        bubbleSort(array, animationSpeed, handleArrayChange, handleAnimationsChange);
+        if (trace.arrays.length === 0) {
+          let newTrace = bubbleSort(array);
+          this.setState({ trace: newTrace }, () => {
+            this.startVisualization();
+          });
+        } else {
+          this.startVisualization();
+        }
         break;
 
       case "2":
+        // TODO: Quick sort
         break;
 
       case "3":
-        console.log("Starting insertion sort");
+        // TODO: Insertion sort
         break;
 
       default:
@@ -75,20 +125,50 @@ function App() {
     }
   };
 
-  return (
-    <div className="App">
-      <Navbar
-        handleArrayReset={handleArrayReset}
-        handleSizeChange={handleSizeChange}
-        handleAnimationSpeedChange={handleAnimationSpeedChange}
-        handleAlgorythmChange={handleAlgorythmChange}
-        handleStart={handleStart}
-        arraySize={arraySize}
-        animationSpeed={animationSpeed}
-      />
-      <Array array={array} animations={animations} />
-    </div>
-  );
+  //Move to the next step of visualization
+  nextStep = () => {
+    let { step, trace } = this.state;
+    if (step < trace.arrays.length - 1) {
+      this.setState({ step: step + 1 });
+    } else {
+      this.stopVisualization();
+    }
+  };
+
+  startVisualization = () => {
+    let time = 250 / this.state.animationSpeed;
+    let animationId = setInterval(() => {
+      this.nextStep();
+    }, time);
+
+    this.setState({ animationId, visualizationRunning: true });
+  };
+
+  stopVisualization = () => {
+    clearInterval(this.state.animationId);
+    this.setState({ animationId: null, visualizationRunning: false });
+  };
+
+  render() {
+    const { arraySize, animationSpeed, array, trace, step, visualizationRunning } = this.state;
+
+    return (
+      <div className="App">
+        <Navbar
+          handleArrayReset={this.handleArrayReset}
+          handleSizeChange={this.handleSizeChange}
+          handleAnimationSpeedChange={this.handleAnimationSpeedChange}
+          handleAlgorythmChange={this.handleAlgorythmChange}
+          handleStart={this.handleStart}
+          stopVisualization={this.stopVisualization}
+          visualizationRunning={visualizationRunning}
+          arraySize={arraySize}
+          animationSpeed={animationSpeed}
+        />
+        <Array array={array} trace={trace} step={step} />
+      </div>
+    );
+  }
 }
 
 export default App;

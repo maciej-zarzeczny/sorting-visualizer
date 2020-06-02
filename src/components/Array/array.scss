@@ -15,8 +15,16 @@
     border-radius: 1000px 1000px 0 0;
     background-color: color("secondary");
 
-    &.active {
+    &.compared {
+      background-color: color("primary");
+    }
+
+    &.swapped {
       background-color: color("accent");
+    }
+
+    &.sorted {
+      background-color: color("primary");
     }
   }
 }

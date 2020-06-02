@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./array.scss";
 
-const Array = ({ array, animations }) => {
+const Array = ({ array, trace, step }) => {
   const [barWidth, setBarWidth] = useState(0);
   useEffect(() => {
     const calculateBarWidth = () => {
@@ -14,21 +14,33 @@ const Array = ({ array, animations }) => {
     calculateBarWidth();
   }, [array.length]);
 
-  return (
-    <div className="array-container">
-      {array.map((val, idx) => {
-        let activeClass = animations.includes(idx) || animations.includes(-1) ? "active" : "";
+  const arrayChart =
+    trace.arrays.length > 0
+      ? trace.arrays[step].map((val, idx) => {
+          let barStyles = "bar";
+          if (trace.comparisons[step].includes(idx)) barStyles += " compared";
+          if (trace.swaps[step].includes(idx)) barStyles += " swapped";
+          if (trace.sorted[step].includes(idx)) barStyles += " sorted";
 
-        return (
-          <div
-            className={"bar " + activeClass}
-            key={idx}
-            style={{ height: val + "px", width: barWidth + "px" }}
-          ></div>
-        );
-      })}
-    </div>
-  );
+          return (
+            <div
+              className={barStyles}
+              key={idx}
+              style={{ height: val + "px", width: barWidth + "px" }}
+            ></div>
+          );
+        })
+      : array.map((val, idx) => {
+          return (
+            <div
+              className={"bar"}
+              key={idx}
+              style={{ height: val + "px", width: barWidth + "px" }}
+            ></div>
+          );
+        });
+
+  return <div className="array-container">{arrayChart}</div>;
 };
 
 export default Array;

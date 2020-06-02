@@ -1,75 +1,107 @@
+const setTrace = (trace, array, comparison = [], swap = [], sorted = []) => {
+  trace.arrays.push(array.slice(0));
+  trace.comparisons.push(comparison);
+  trace.swaps.push(swap);
+  trace.sorted.push(sorted);
+};
+
 export const mergeSort = (array) => {
-  if (array.length === 1) return array;
-  let m = Math.ceil(array.length / 2);
-  let L = mergeSort(array.slice(0, m));
-  let R = mergeSort(array.slice(m));
+  let trace = { arrays: [], comparisons: [], swaps: [], sorted: [] };
 
-  let sortedArray = [];
-  let i = 0,
-    j = 0;
-
-  while (i < L.length && j < R.length) {
-    if (L[i] < R[j]) {
-      sortedArray.push(L[i]);
-      i += 1;
-    } else {
-      sortedArray.push(R[j]);
-      j += 1;
+  function merge(array, startIdx, middleIdx, endIdx) {
+    const left = array.slice(startIdx, middleIdx);
+    const right = array.slice(middleIdx, endIdx);
+    let i = 0;
+    let j = 0;
+    let k = 0;
+    while (i < left.length && j < right.length) {
+      setTrace(trace, array, [i + startIdx, j + middleIdx], [-1, -1]);
+      if (left[i] <= right[j]) {
+        array[k + startIdx] = left[i];
+        setTrace(trace, array, [-1, -1], [k + startIdx, i + startIdx]);
+        i++;
+      } else {
+        array[k + startIdx] = right[j];
+        setTrace(trace, array, [-1, -1], [k + startIdx, j + middleIdx]);
+        j++;
+      }
+      k++;
+    }
+    while (i < left.length) {
+      array[k + startIdx] = left[i];
+      setTrace(trace, array, [-1, -1], [k + startIdx, i + startIdx]);
+      i++;
+      k++;
+    }
+    while (j < right.length) {
+      array[k + startIdx] = right[j];
+      setTrace(trace, array, [-1, -1], [k + startIdx, j + middleIdx]);
+      j++;
+      k++;
     }
   }
 
-  while (i < L.length) {
-    sortedArray.push(L[i]);
-    i += 1;
+  function splitArray(array, startIdx, endIdx) {
+    const length = endIdx - startIdx;
+    if (length < 2) {
+      // array = []
+      if (length < 1) return array;
+      // array = [x]
+      else return [array[startIdx]];
+    }
+
+    const middleIdx = Math.floor((startIdx + endIdx) / 2);
+    splitArray(array, startIdx, middleIdx);
+    splitArray(array, middleIdx, endIdx);
+    merge(array, startIdx, middleIdx, endIdx);
   }
 
-  while (j < R.length) {
-    sortedArray.push(R[j]);
-    j += 1;
-  }
-
-  return sortedArray;
+  splitArray(array, 0, array.length);
+  setTrace(trace, array, [-1, -1], [-1, -1], [...Array(array.length).keys()]);
+  return trace;
 };
 
-export const bubbleSort = async (
-  arr,
-  animationSpeed,
-  handleArrayChange,
-  handleAnimationsChange
-) => {
-  let animations = [0, 0];
+export const bubbleSort = (arr) => {
   let array = arr.slice(0);
   let n = array.length;
   let swapped = false;
-
-  const sleep = (milliseconds) => {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  };
+  let comparisons = [];
+  let arrays = [];
+  let swaps = [];
+  let sorted = [];
 
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n - i - 1; j++) {
-      animations[0] = j;
-      animations[1] = j + 1;
+      let newArray = array.slice(0);
+      arrays.push(newArray);
+      comparisons.push([j, j + 1]);
+      swaps.push([-1, -1]);
+      sorted.length > 0 ? sorted.push([...sorted[sorted.length - 1]]) : sorted.push([]);
+
       if (array[j + 1] < array[j]) {
         let temp = array[j];
         array[j] = array[j + 1];
         array[j + 1] = temp;
         swapped = true;
+
+        newArray = array.slice(0);
+        arrays.push(newArray);
+        comparisons.push([-1, -1]);
+        swaps.push([j, j + 1]);
+        sorted.push([...sorted[sorted.length - 1]]);
       }
-      await sleep(101 - animationSpeed);
-      let arrayToChange = array.slice(0);
-      let newAnimations = animations.slice(0);
-      handleArrayChange(arrayToChange);
-      handleAnimationsChange(newAnimations);
     }
+
+    let newArray = array.slice(0);
+    arrays.push(newArray);
+    comparisons.push([-1, -1]);
+    swaps.push([-1, -1]);
+    sorted.push([...sorted[sorted.length - 1], n - i - 1]);
 
     if (!swapped) {
       break;
     }
   }
 
-  animations[0] = -1;
-  animations[1] = -1;
-  handleAnimationsChange(animations);
-  return array;
+  return { arrays, comparisons, swaps, sorted };
 };
