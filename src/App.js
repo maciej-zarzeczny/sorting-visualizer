@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
 import Array from "./components/Array/Array";
-import { mergeSort, bubbleSort } from "./Algorythms";
+import { mergeSort, bubbleSort, quickSortAlgorythm, insertionSort } from "./Algorythms";
 
 class App extends React.Component {
   state = {
@@ -81,11 +81,6 @@ class App extends React.Component {
     this.setState({ array });
   };
 
-  handleTraceChange = (arrays, comparisons) => {
-    let trace = { arrays, comparisons };
-    this.setState({ trace });
-  };
-
   handleStart = () => {
     let { algorythm, array, trace } = this.state;
 
@@ -113,11 +108,25 @@ class App extends React.Component {
         break;
 
       case "2":
-        // TODO: Quick sort
+        if (trace.arrays.length === 0) {
+          let newTrace = quickSortAlgorythm(array);
+          this.setState({ trace: newTrace }, () => {
+            this.startVisualization();
+          });
+        } else {
+          this.startVisualization();
+        }
         break;
 
       case "3":
-        // TODO: Insertion sort
+        if (trace.arrays.length === 0) {
+          let newTrace = insertionSort(array);
+          this.setState({ trace: newTrace }, () => {
+            this.startVisualization();
+          });
+        } else {
+          this.startVisualization();
+        }
         break;
 
       default:

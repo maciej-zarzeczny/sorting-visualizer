@@ -20,7 +20,8 @@ const Array = ({ array, trace, step }) => {
           let barStyles = "bar";
           if (trace.comparisons[step].includes(idx)) barStyles += " compared";
           if (trace.swaps[step].includes(idx)) barStyles += " swapped";
-          if (trace.sorted[step].includes(idx)) barStyles += " sorted";
+          if (trace.sorted[step].includes(idx) || trace.sorted[step].includes(-1))
+            barStyles += " sorted";
 
           return (
             <div

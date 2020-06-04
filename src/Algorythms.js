@@ -1,8 +1,64 @@
-const setTrace = (trace, array, comparison = [], swap = [], sorted = []) => {
+const setTrace = (trace, array, comparison = [], swap = [], sorted) => {
   trace.arrays.push(array.slice(0));
   trace.comparisons.push(comparison);
   trace.swaps.push(swap);
-  trace.sorted.push(sorted);
+
+  trace.sorted.length > 0
+    ? sorted === undefined
+      ? trace.sorted.push([...trace.sorted[trace.sorted.length - 1]])
+      : trace.sorted.push([...trace.sorted[trace.sorted.length - 1], sorted])
+    : trace.sorted.push([]);
+};
+
+const swap = (array, i, j) => {
+  const temp = array[i];
+  array[i] = array[j];
+  array[j] = temp;
+};
+
+export const quickSortAlgorythm = (array) => {
+  let trace = { arrays: [], comparisons: [], swaps: [], sorted: [] };
+
+  const partition = (array, low, high) => {
+    let i = low - 1;
+    let pivot = array[high];
+
+    // ANIMATIONS: set pivot bar
+    setTrace(trace, array, [i, high]);
+
+    for (let j = low; j < high; j++) {
+      setTrace(trace, array, [j, high]);
+      if (array[j] < pivot) {
+        i++;
+        // ANIMATIONS: swap
+        setTrace(trace, array, [high, high], [i, j]);
+        swap(array, i, j);
+        setTrace(trace, array, [high, high], [i, j]);
+      }
+    }
+    // ANIMATIONS: swap pivot and mark it as sorted
+    setTrace(trace, array, [], [i + 1, high]);
+    swap(array, i + 1, high);
+    setTrace(trace, array, [], [i + 1, high], i + 1);
+    return i + 1;
+  };
+
+  const quickSort = (array, low, high) => {
+    if (low >= high) {
+      if (low === high) {
+        setTrace(trace, array, [], [], low);
+      }
+      return;
+    }
+    let pi = partition(array, low, high);
+
+    quickSort(array, low, pi - 1);
+    quickSort(array, pi + 1, high);
+  };
+
+  quickSort(array, 0, array.length - 1);
+  setTrace(trace, array, [], [], -1);
+  return trace;
 };
 
 export const mergeSort = (array) => {
@@ -18,24 +74,24 @@ export const mergeSort = (array) => {
       setTrace(trace, array, [i + startIdx, j + middleIdx], [-1, -1]);
       if (left[i] <= right[j]) {
         array[k + startIdx] = left[i];
-        setTrace(trace, array, [-1, -1], [k + startIdx, i + startIdx]);
+        setTrace(trace, array, [], [k + startIdx, i + startIdx]);
         i++;
       } else {
         array[k + startIdx] = right[j];
-        setTrace(trace, array, [-1, -1], [k + startIdx, j + middleIdx]);
+        setTrace(trace, array, [], [k + startIdx, j + middleIdx]);
         j++;
       }
       k++;
     }
     while (i < left.length) {
       array[k + startIdx] = left[i];
-      setTrace(trace, array, [-1, -1], [k + startIdx, i + startIdx]);
+      setTrace(trace, array, [], [k + startIdx, i + startIdx]);
       i++;
       k++;
     }
     while (j < right.length) {
       array[k + startIdx] = right[j];
-      setTrace(trace, array, [-1, -1], [k + startIdx, j + middleIdx]);
+      setTrace(trace, array, [], [k + startIdx, j + middleIdx]);
       j++;
       k++;
     }
@@ -44,10 +100,9 @@ export const mergeSort = (array) => {
   function splitArray(array, startIdx, endIdx) {
     const length = endIdx - startIdx;
     if (length < 2) {
-      // array = []
-      if (length < 1) return array;
-      // array = [x]
-      else return [array[startIdx]];
+      // if (length < 1) return array;
+      // else return [array[startIdx]];
+      return;
     }
 
     const middleIdx = Math.floor((startIdx + endIdx) / 2);
@@ -57,7 +112,7 @@ export const mergeSort = (array) => {
   }
 
   splitArray(array, 0, array.length);
-  setTrace(trace, array, [-1, -1], [-1, -1], [...Array(array.length).keys()]);
+  setTrace(trace, array, [], [], -1);
   return trace;
 };
 
@@ -65,18 +120,11 @@ export const bubbleSort = (arr) => {
   let array = arr.slice(0);
   let n = array.length;
   let swapped = false;
-  let comparisons = [];
-  let arrays = [];
-  let swaps = [];
-  let sorted = [];
+  let trace = { arrays: [], comparisons: [], swaps: [], sorted: [] };
 
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n - i - 1; j++) {
-      let newArray = array.slice(0);
-      arrays.push(newArray);
-      comparisons.push([j, j + 1]);
-      swaps.push([-1, -1]);
-      sorted.length > 0 ? sorted.push([...sorted[sorted.length - 1]]) : sorted.push([]);
+      setTrace(trace, array, [j, j + 1]);
 
       if (array[j + 1] < array[j]) {
         let temp = array[j];
@@ -84,24 +132,36 @@ export const bubbleSort = (arr) => {
         array[j + 1] = temp;
         swapped = true;
 
-        newArray = array.slice(0);
-        arrays.push(newArray);
-        comparisons.push([-1, -1]);
-        swaps.push([j, j + 1]);
-        sorted.push([...sorted[sorted.length - 1]]);
+        setTrace(trace, array, [], [j, j + 1]);
       }
     }
 
-    let newArray = array.slice(0);
-    arrays.push(newArray);
-    comparisons.push([-1, -1]);
-    swaps.push([-1, -1]);
-    sorted.push([...sorted[sorted.length - 1], n - i - 1]);
+    setTrace(trace, array, [], [], n - i - 1);
 
     if (!swapped) {
       break;
     }
   }
 
-  return { arrays, comparisons, swaps, sorted };
+  return trace;
+};
+
+export const insertionSort = (array) => {
+  let trace = { arrays: [], comparisons: [], swaps: [], sorted: [] };
+
+  for (let i = 1; i < array.length; i++) {
+    setTrace(trace, array, [i, i]);
+    let comparedValue = array[i];
+    let j = i - 1;
+
+    while (j >= 0 && comparedValue < array[j]) {
+      setTrace(trace, array, [], [i, j]);
+      array[j + 1] = array[j];
+      j--;
+    }
+    array[j + 1] = comparedValue;
+  }
+
+  setTrace(trace, array, [], [], -1);
+  return trace;
 };

@@ -80,6 +80,35 @@ nav {
   }
 }
 
+.info-container {
+  position: relative;
+
+  .info {
+    opacity: 0;
+    background-color: color("primary");
+    position: absolute;
+    width: 30vh;
+    top: 85%;
+    left: 85%;
+    padding: 50% 70% 50% 70%;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: opacity 0.3s ease-in-out;
+
+    p {
+      color: color("white");
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+  }
+
+  .info.active {
+    opacity: 1;
+  }
+}
+
 .choose-algorythm-container {
   position: relative;
 

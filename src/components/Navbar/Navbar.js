@@ -16,7 +16,9 @@ const Navbar = ({
   animationSpeed,
 }) => {
   const [settingsActive, setSettingsActive] = useState(false);
+  const [infoActive, setInfoActive] = useState(false);
   const settingsClass = settingsActive ? "active" : "";
+  const infoClass = infoActive ? "active" : "";
 
   const algorythms = ["Merge sort", "Bubble sort", "Quick sort", "Insertion sort"];
   const buttonClass = visualizationRunning ? "disabled" : "";
@@ -28,18 +30,41 @@ const Navbar = ({
     }
   };
 
+  const handleInfoClick = () => {
+    if (!visualizationRunning) {
+      setInfoActive(!infoActive);
+    }
+  };
+
+  const handleStartClick = () => {
+    if (settingsActive) setSettingsActive(false);
+    if (infoActive) setInfoActive(false);
+    handleStart();
+  };
+
   return (
     <nav>
-      <span
-        data-tip="How to use?"
-        data-for="help-tooltip"
-        data-place="right"
-        data-effect="solid"
-        className={"fab help-icon " + buttonClass}
-      >
-        <FaQuestion className="icon" />
-      </span>
-      {!visualizationRunning && <ReactTooltip id="help-tooltip" />}
+      <div className="info-container">
+        <span
+          data-tip="How to use?"
+          data-for="help-tooltip"
+          data-place="right"
+          data-effect="solid"
+          className={"fab help-icon " + buttonClass}
+          onClick={handleInfoClick}
+        >
+          <FaQuestion className="icon" />
+        </span>
+        {!visualizationRunning && <ReactTooltip id="help-tooltip" />}
+
+        <div className={"info " + infoClass}>
+          <p>Choose desired sorting algorythm and press start to see the visualization.</p>
+          <p>
+            You can adjust array size and sorting speed by clicking on a settings icon in upper
+            right corner.
+          </p>
+        </div>
+      </div>
 
       <section className="controls">
         <div className="choose-algorythm-container">
@@ -60,7 +85,7 @@ const Navbar = ({
 
         <button
           className="start"
-          onClick={visualizationRunning ? () => stopVisualization() : () => handleStart()}
+          onClick={visualizationRunning ? () => stopVisualization() : () => handleStartClick()}
         >
           {buttonText}
         </button>
