@@ -2,7 +2,7 @@
   "name": "sorting_visualizer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/maciekz1996/sorting-visualizer/",
+  "homepage": "https://maciekz1996.github.io/sorting-visualizer/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
