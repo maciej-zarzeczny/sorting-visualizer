@@ -4,7 +4,7 @@ import { FaQuestion, FaCog, FaRedo } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
 import Slider from "react-input-slider";
 
-function Navbar({
+const Navbar = ({
   handleArrayReset,
   handleSizeChange,
   handleAnimationSpeedChange,
@@ -14,7 +14,7 @@ function Navbar({
   visualizationRunning,
   arraySize,
   animationSpeed,
-}) {
+}) => {
   const [settingsActive, setSettingsActive] = useState(false);
   const [infoActive, setInfoActive] = useState(false);
   const settingsClass = settingsActive ? "active" : "";
@@ -146,6 +146,6 @@ function Navbar({
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
