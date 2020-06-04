@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./array.scss";
 
-const Array = ({ array, trace, step }) => {
+const MainArray = ({ array, trace, step }) => {
   const [barWidth, setBarWidth] = useState(0);
   useEffect(() => {
     const calculateBarWidth = () => {
@@ -44,4 +44,4 @@ const Array = ({ array, trace, step }) => {
   return <div className="array-container">{arrayChart}</div>;
 };
 
-export default Array;
+export default MainArray;

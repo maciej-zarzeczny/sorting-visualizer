@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
-import Array from "./components/Array/Array";
+import MainArray from "./components/Array/MainArray";
 import { mergeSort, bubbleSort, quickSortAlgorythm, insertionSort } from "./Algorythms";
 
 class App extends React.Component {
@@ -174,7 +174,7 @@ class App extends React.Component {
           arraySize={arraySize}
           animationSpeed={animationSpeed}
         />
-        <Array array={array} trace={trace} step={step} />
+        <MainArray array={array} trace={trace} step={step} />
       </div>
     );
   }
