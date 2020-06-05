@@ -6,9 +6,9 @@ import { mergeSort, bubbleSort, quickSortAlgorythm, insertionSort } from "./Algo
 class App extends React.Component {
   state = {
     array: [],
-    arraySize: 100,
+    arraySize: 70,
     algorythm: "0",
-    animationSpeed: 15,
+    animationSpeed: 10,
     visualizationRunning: false,
     trace: { arrays: [], comparisons: [], swaps: [], sorted: [] },
     step: 0,
@@ -38,7 +38,7 @@ class App extends React.Component {
 
     let array = [];
     for (let i = 0; i < arraySize; i++) {
-      array.push(getRandomInt(5, 750));
+      array.push(getRandomInt(1, 95));
     }
 
     this.setState({

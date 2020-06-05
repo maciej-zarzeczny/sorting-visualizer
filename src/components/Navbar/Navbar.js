@@ -114,6 +114,21 @@ const Navbar = ({
         {!visualizationRunning && <ReactTooltip id="settings-tooltip" />}
 
         <div className={"settings " + settingsClass}>
+          <div className="choose-algorythm-container mobile-algorythm-container">
+            <select
+              disabled={visualizationRunning}
+              className={"choose-algorythm " + buttonClass}
+              onChange={(e) => handleAlgorythmChange(e.target.value)}
+            >
+              {algorythms.map((el, idx) => {
+                return (
+                  <option value={idx} key={idx}>
+                    {el}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
           <p>Array size: {arraySize}</p>
           <Slider
             styles={{
@@ -123,8 +138,8 @@ const Navbar = ({
             }}
             axis="x"
             xstep={1}
-            xmin={10}
-            xmax={200}
+            xmin={5}
+            xmax={140}
             x={arraySize}
             onChange={({ x }) => handleSizeChange(x)}
           />

@@ -27,7 +27,7 @@ const MainArray = ({ array, trace, step }) => {
             <div
               className={barStyles}
               key={idx}
-              style={{ height: val + "px", width: barWidth + "px" }}
+              style={{ height: val + "%", width: barWidth + "px" }}
             ></div>
           );
         })
@@ -36,7 +36,7 @@ const MainArray = ({ array, trace, step }) => {
             <div
               className={"bar"}
               key={idx}
-              style={{ height: val + "px", width: barWidth + "px" }}
+              style={{ height: val + "%", width: barWidth + "px" }}
             ></div>
           );
         });

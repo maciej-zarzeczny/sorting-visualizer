@@ -9,6 +9,11 @@ nav {
   height: 7rem;
   padding: 0 2rem 0 2rem;
 
+  @include mobile {
+    height: 4rem;
+    padding: 0 1rem 0 1rem;
+  }
+
   section.controls {
     display: flex;
     align-items: center;
@@ -32,6 +37,10 @@ nav {
     .icon {
       @include font-size(20px);
       color: color("white");
+
+      @include mobile {
+        @include font-size(14px);
+      }
     }
 
     &.disabled {
@@ -69,6 +78,10 @@ nav {
     p {
       color: color("white");
 
+      @include mobile {
+        font-size: 14px;
+      }
+
       &:first-of-type {
         margin-top: 0;
       }
@@ -98,6 +111,11 @@ nav {
     p {
       color: color("white");
 
+      @include mobile {
+        font-size: 14px;
+        width: 30vh;
+      }
+
       &:first-of-type {
         margin-top: 0;
       }
@@ -111,11 +129,13 @@ nav {
 
 .choose-algorythm-container {
   position: relative;
+  text-align: center;
 
   .choose-algorythm {
     @include button;
     text-transform: none;
     border: 1px solid color("primary");
+    background-color: transparent;
     color: color("primary");
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -125,6 +145,12 @@ nav {
     &.disabled {
       cursor: not-allowed;
       opacity: 0.8;
+    }
+
+    @include mobile {
+      border: 1px solid color("white");
+      color: color("white");
+      min-width: 120px;
     }
   }
 
@@ -137,6 +163,15 @@ nav {
     height: 0;
     border: 6px solid transparent;
     border-color: color("primary") transparent transparent transparent;
+
+    @include mobile {
+      right: 27%;
+      border-color: color("white") transparent transparent transparent;
+    }
+  }
+
+  @include mobile {
+    display: none;
   }
 }
 
@@ -144,5 +179,14 @@ nav {
   &:after {
     border-color: transparent transparent color("primary") transparent;
     top: 30%;
+  }
+}
+
+.choose-algorythm-container.mobile-algorythm-container {
+  display: none;
+
+  @include mobile {
+    display: block;
+    margin-bottom: 1rem;
   }
 }
