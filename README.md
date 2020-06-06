@@ -2,6 +2,8 @@
 
 This project was created with React and it's main purpose is to visualize different sorting algorythms. You can choose the algorythm that you like, set the array size and sorting speed and see in real time how different algorythms handle sorting arrays.
 
+![](sorting_demo.gif)
+
 ## Installation
 
 Clone the repository, install all dependencies and you are ready to go
